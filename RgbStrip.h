@@ -28,6 +28,8 @@
 #define DEFAULT_STROBE_PERIOD 100
 #define MINIMUM_STROBE_PERIOD 20	// Minimum half-cycle strobe period in ms. This translates to 25 Hz
 
+#define FLASH_PERIOD 200
+
 class RgbStrip
 {
 	public:
@@ -41,6 +43,9 @@ class RgbStrip
 
 	// Set the brightness of the led strip
 	void setBrightness(int percentage);
+	
+	// Get the brightness value of the led strip
+	int getBrightness();
 	
 	// Set the brightness of the led strip to a low level
 	void setLowBrightness();
@@ -66,6 +71,9 @@ class RgbStrip
 	// Set the period for the transition timer events
 	void setTransitionPeriod(long period);
 	
+	// Get the period for the transition timer events
+	long getTransitionPeriod();
+	
 	// Increase the period for transition timer events
 	void increaseTransitionPeriod();
 	
@@ -84,6 +92,9 @@ class RgbStrip
 	// Set the toggle period for transition timer events
 	void setStrobePeriod(long period);
 	
+	// Get the period between strobe timer events
+	long getStrobePeriod();
+	
 	// Increase the period for strobe timer events by a fixed amount
 	void increaseStrobePeriod();
 	
@@ -92,6 +103,9 @@ class RgbStrip
 	
 	// Determine if strobe timer events are enabled
 	bool isStrobeEnabled();
+	
+	// Flash the led strip the specified number of times
+	void flash(int numFlashes);
 	
 	// Update timer status
 	void update();
@@ -137,6 +151,7 @@ class RgbStrip
 	SimpleTimer	_timer;
 	int _transitionEventID;
 	int _strobeEventID;
+	int _flashEventID;
 };
 
 

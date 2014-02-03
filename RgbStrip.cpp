@@ -78,6 +78,13 @@ void RgbStrip::setActiveColour(RGB colour) {
 }
 
 
+/**
+* Get the colour code for the actively displayed colour  
+*/
+RGB RgbStrip::getActiveColour(){
+	return _activeColour;
+}
+
 // Colour control - Private
 
 /**
@@ -126,6 +133,15 @@ void RgbStrip::setBrightness(int percentage) {
 	applyActiveColour();
 }
 
+
+/**
+* Return the current brightness of the led strip
+* @return Percentage brightness of the strip  
+*/
+int RgbStrip::getBrightness(){
+	return _brightness;
+}
+	
 	
 /**
 * Set the brightness to a low level
@@ -302,11 +318,20 @@ void RgbStrip::disableTransitions(){
 * @param period Time between transition events in ms.  
 */
 void RgbStrip::setTransitionPeriod(long period){
-	if (period < TRANSITION_STEP){
-		period = TRANSITION_STEP;
+	if (period < TRANSITION_PERIOD_STEP){
+		period = TRANSITION_PERIOD_STEP;
 	}
 	
 	_timer.setTimerPeriod(_transitionEventID, period);
+}
+
+
+/**
+* Get the transition period for the led strip  
+* @return Period between transition timer events in ms
+*/
+long RgbStrip::getTransitionPeriod(){
+	return _timer.getTimerPeriod(_transitionEventID);
 }
 
 
@@ -315,8 +340,7 @@ void RgbStrip::setTransitionPeriod(long period){
 * (default/TRANSITION_PERIOD_STEP: 2ms)  
 */
 void RgbStrip::increaseTransitionPeriod(){
-	long transitionPeriod = _timer.getTimerPeriod(_transitionEventID);
-	setTransitionPeriod(transitionPeriod + TRANSITION_PERIOD_STEP);
+	setTransitionPeriod(getTransitionPeriod() + TRANSITION_PERIOD_STEP);
 }
 
 
@@ -325,8 +349,14 @@ void RgbStrip::increaseTransitionPeriod(){
 * (default/TRANSITION_PERIOD_STEP: 2ms)
 */  
 void RgbStrip::decreaseTransitionPeriod(){
-	long transitionPeriod = _timer.getTimerPeriod(_transitionEventID);
-	setTransitionPeriod(transitionPeriod - TRANSITION_STEP);
+	long transitionPeriod = getTransitionPeriod();
+	
+	transitionPeriod -= TRANSITION_PERIOD_STEP;
+	if(transitionPeriod < TRANSITION_PERIOD_STEP){
+		transitionPeriod = TRANSITION_PERIOD_STEP;
+	}
+	
+	setTransitionPeriod(transitionPeriod);
 }
 
 
@@ -377,6 +407,9 @@ void RgbStrip::enableStrobe(){
 */
 void RgbStrip::disableStrobe(){
 	_timer.disable(_strobeEventID);
+	
+	// Ensure the lights are always on when disabling strobe
+	setBrightness(_strobeBrightness);
 }
 
 
@@ -393,13 +426,20 @@ void RgbStrip::setStrobePeriod(long period){
 
 
 /**
+* Get the period between strobe timer events
+* @return Period between events in ms  
+*/
+long RgbStrip::getStrobePeriod(){
+	return _timer.getTimerPeriod(_strobeEventID);
+}
+
+
+/**
 * Increase the time between strobe timer events by a fixed amount
 * By default, increases are in 5ms increments (STROBE_STEP)   
 */
 void RgbStrip::increaseStrobePeriod(){
-	long strobePeriod = _timer.getTimerPeriod(_strobeEventID);
-	
-	setStrobePeriod(strobePeriod + STROBE_STEP);
+	setStrobePeriod(getStrobePeriod() + STROBE_STEP);
 }
 
 
@@ -408,7 +448,7 @@ void RgbStrip::increaseStrobePeriod(){
 * By default, decreases are in 5ms increments (STROBE_STEP)
 */
 void RgbStrip::decreaseStrobePeriod(){
-	long strobePeriod = _timer.getTimerPeriod(_strobeEventID);
+	long strobePeriod = getStrobePeriod();
 	
 	strobePeriod -= STROBE_STEP;
 	if(strobePeriod < MINIMUM_STROBE_PERIOD){
@@ -425,4 +465,22 @@ void RgbStrip::decreaseStrobePeriod(){
 */
 bool RgbStrip::isStrobeEnabled(){
 	return _timer.isEnabled(_strobeEventID);
+}
+
+
+// Flash 
+
+/**
+* Flash the led strip a specified number of times
+* The flash frequency is detemined by FLASH_PERIOD
+* @param numFlashes The amount of times the lights will flash  
+*/
+void RgbStrip::flash(int numFlashes){
+	disableStrobe();
+	_strobeBrightness = _brightness;
+	
+	// Double the flash number to always give an even number of toggles
+	numFlashes  *= 2;
+	
+	_flashEventID = _timer.setTimer(FLASH_PERIOD, strobeEvent_wrapper, numFlashes);
 }
