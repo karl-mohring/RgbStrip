@@ -12,14 +12,14 @@ RgbStrip	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
-setTargetColour		KEYWORD2
+setTargetColour	KEYWORD2
 isTransitionsEnabled	KEYWORD2
-setBrightness		KEYWORD2
+setBrightness	KEYWORD2
 setBrightnessIncrement	KEYWORD2
-setLowBrightness 	KEYWORD2
+setLowBrightness	KEYWORD2
 setFullBrightness	KEYWORD2
 setTransitionStep	KEYWORD2
-lightsOff		KEYWORD2
+lightsOff	KEYWORD2
 increaseBrightness	KEYWORD2
 decreaseBrightness	KEYWORD2
 stepTowardsTargetColour	KEYWORD2
@@ -29,9 +29,9 @@ isTargetColourReached	KEYWORD2
 #######################################
 # Constants (LITERAL1)
 #######################################
-DEFAULT_TRANSITION_STEP		LITERAL1
+DEFAULT_TRANSITION_STEP	LITERAL1
 DEFAULT_BRIGHTNESS_INCREMENT	LITERAL1
-DEFAULT_BRIGHTNESS		LITERAL1
-LOW_BRIGHTNESS			LITERAL1
-FULL_BRIGHTNESS			LITERAL1
+DEFAULT_BRIGHTNESS	LITERAL1
+LOW_BRIGHTNESS	LITERAL1
+FULL_BRIGHTNESS	LITERAL1
 
